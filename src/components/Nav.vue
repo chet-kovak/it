@@ -29,10 +29,10 @@
     <div class="mb-4 mt-n4">
       <div class="mainnav">
         <router-link :to="{ name: 'home' }" class="button button-secondary">
-          ITS 
+          $ITS 
         </router-link>
         <router-link :to="{ name: 'pre' }" class="button button-secondary">
-          Presale 
+          PRESALE 
         </router-link>
         <router-link :to="{ name: 'about' }" class="button button-secondary">
           ABOUT
