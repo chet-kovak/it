@@ -48,13 +48,13 @@ export default {
       setInterval( async function(){
         await this.getNextRebalance();      
         this.nextRebalance = this.$store.state.settings.nextRebalance;
+        await this.loadITSBalance();
+        await this.loadITSEthPrice();
       }.bind(this), 10000);
   },
   computed: {
     ...mapState(['settings']),
     isValid() {
-      console.log(Date.now())
-      console.log(this.nextRebalance)
       return ( //Valid if lastcall + interval > now
         Date.now() > this.nextRebalance
       );
@@ -62,7 +62,7 @@ export default {
 
   },
   methods: {
-    ...mapActions(['getNextRebalance', 'rebalance']),
+    ...mapActions(['getNextRebalance', 'rebalance', 'loadITSBalance', 'loadITSEthPrice']),
     handleSubmit() {
       this.rebalance();
     }
