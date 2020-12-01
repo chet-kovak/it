@@ -5,7 +5,8 @@
     <p class="mb-6">Rebalance The Syndicate</p>
     <form @submit.prevent="handleSubmit" class="form">
       <div class="mb-4">
-        <h3>200ITS / 1ETH</h3>
+        <h3>{{settings.itsPrice}} ITS / ETH</h3>
+        <h3>{{settings.itsBalance.substr(0,10)}} ITS</h3>
       </div>
       <button
         v-if="settings.address"
@@ -28,36 +29,42 @@
 </template>
 
 <script>
-import { mapState } from 'vuex';
+import { mapState, mapActions } from 'vuex';
 
 export default {
   data() {
     return {
       form: {
-        asset: '',
         quantity: '',
-        strike: '',
-        expiry: ''
       },
+      nextRebalance: Date.now() + 10000,
       modalLoginOpen: false,
       modalMakepotionOpen: false
     };
   },
+  async created() {
+      await this.getNextRebalance();      
+      this.nextRebalance = this.$store.state.settings.nextRebalance;
+      setInterval( async function(){
+        await this.getNextRebalance();      
+        this.nextRebalance = this.$store.state.settings.nextRebalance;
+        await this.loadITSBalance();
+        await this.loadITSEthPrice();
+      }.bind(this), 10000);
+  },
   computed: {
     ...mapState(['settings']),
     isValid() {
-      return (
-        this.form.asset && parseFloat(this.form.quantity) && this.form.strike && this.form.expiry
+      return ( //Valid if lastcall + interval > now
+        Date.now() > this.nextRebalance
       );
     },
-    maxStrike() {
-      const exchangeRate = this.settings.exchangeRates[this.form.asset];
-      return exchangeRate && exchangeRate.usd ? exchangeRate.usd : 1e9;
-    }
+
   },
   methods: {
+    ...mapActions(['getNextRebalance', 'rebalance', 'loadITSBalance', 'loadITSEthPrice']),
     handleSubmit() {
-      this.modalMakepotionOpen = true;
+      this.rebalance();
     }
   }
 };

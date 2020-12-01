@@ -4,15 +4,11 @@ import store from '@/store';
 import provider from '@/helpers/provider';
 import {
   getExchangeRatesFromCoinGecko,
-  getPotions,
   getAllowances,
-  revitalisePotion,
-  withdrawPotion
 } from '@/helpers/utils';
 import assets from '@/helpers/assets.json';
 import { abi as ierc20Abi } from '@/helpers/abi/IERC20.json';
-import { abi as factoryAbi } from '@/helpers/abi/Factory.json';
-import { abi as synthAbi } from '@/helpers/abi/Synthetic.json';
+import { abi as itsAbi } from '@/helpers/abi/its.json';
 
 const parseEther = ethers.utils.parseEther;
 
@@ -27,11 +23,17 @@ if (ethereum) {
 const state = {
   loading: false,
   address: null,
+  itsAddr: '0x1a476b75c780e9d51a488380d48c744589b5b45a',
+  itsPairAddr: '0x56c8b97d17f518c947da3e9c9ca4cb10d65558a0',
+  wethAddr: '0xB4FBF271143F4FBf7B91A5ded31805e42b2208d6',
+
   name: '',
   balance: 0,
+  itsBalance: 0,
+  itsPrice: 0,
+  nextRebalance: 0,
   network: {},
   exchangeRates: {},
-  potions: [],
   allowances: {},
   balances: {}
 };
@@ -69,8 +71,10 @@ const actions = {
         const balance = await provider.getBalance(address);
         const network = await provider.getNetwork();
         commit('set', { address });
-        await dispatch('loadPotions');
-        await dispatch('loadAllowances');
+        //initialize ether price
+        await dispatch('loadITSBalance');
+        await dispatch('loadITSEthPrice');
+        //get contract balance
         commit('set', {
           name,
           balance: ethers.utils.formatEther(balance),
@@ -91,102 +95,43 @@ const actions = {
     const exchangeRates = await getExchangeRatesFromCoinGecko();
     commit('set', { exchangeRates });
   },
-  async loadPotions({ commit }) {
-    const potions = await getPotions(state.address);
-    console.log('Your potions', potions);
-    commit('set', { potions });
-  },
-  async loadAllowances({ commit }) {
-    const daiAddress = process.env.VUE_APP_DAI_ADDRESS;
-    const addresses = [daiAddress];
-    Object.entries(state.potions).forEach(potion => {
-      // @ts-ignore
-      addresses.push(potion[1].address);
-    });
-    const allowances = await getAllowances(state.address, addresses);
-    console.log('Your allowances', allowances);
-    commit('set', { allowances });
-  },
-  async revitalisePotion({ commit }, payload) {
-    await revitalisePotion(payload);
-  },
-  async withdrawPotion({ commit }, payload) {
-    await withdrawPotion(payload);
-  },
-  async approve({ commit }) {
-    const factoryAddress = process.env.VUE_APP_FACTORY_ADDRESS;
-    const address = process.env.VUE_APP_DAI_ADDRESS;
-    const signer = provider.getSigner();
-    // @ts-ignore
-    const erc20 = new ethers.Contract(address, ierc20Abi, provider);
-    const erc20WithSigner = erc20.connect(signer);
-    const tx = await erc20WithSigner.approve(factoryAddress, parseEther((1e9).toString()));
-    console.log(tx.hash);
-    await tx.wait();
-  },
-  async approvePotion({ commit }, address) {
-    const factoryAddress = process.env.VUE_APP_FACTORY_ADDRESS;
-    const signer = provider.getSigner();
-    // @ts-ignore
-    const potionToken = new ethers.Contract(address, synthAbi, provider);
-    const potionTokenWithSigner = potionToken.connect(signer);
-    const tx = await potionTokenWithSigner.approve(factoryAddress, parseEther((1e7).toString()));
-    console.log(tx.hash);
-    await tx.wait();
-  },
-  async writeMintPotion({ commit, dispatch }, payload) {
-    const factoryAddress = process.env.VUE_APP_FACTORY_ADDRESS;
-    const finderAddress = process.env.VUE_APP_FINDER_ADDRESS;
-    const tokenFactoryAddress = process.env.VUE_APP_TOKEN_FACTORY_ADDRESS;
-    const timerAddress = process.env.VUE_APP_TOKEN_FACTORY_ADDRESS;
-    const daiAddress = process.env.VUE_APP_DAI_ADDRESS;
-    const poolLpAddress = process.env.VUE_APP_POOL_LP_ADDRESS;
-    const signer = provider.getSigner();
-    // @ts-ignore
-    const factory = new ethers.Contract(factoryAddress, factoryAbi, provider);
-    const factoryWithSigner = factory.connect(signer);
-    const ticker = assets[payload.asset].ticker;
-
-    const [year, month, day] = payload.expiry.split('-');
-    const expiryDate = new Date(parseInt(year), parseInt(month) - 1, parseInt(day) + 1);
-    const expirationTimestamp = parseInt((expiryDate.getTime() / 1000).toString()).toString();
-    const syntheticName = `${ticker} Potion ${payload.expiry}`;
-    const syntheticSymbol = `${ticker}POT`;
-    const params = {
-      expirationTimestamp,
-      withdrawalLiveness: '1',
-      collateralAddress: daiAddress,
-      finderAddress,
-      tokenFactoryAddress,
-      priceFeedIdentifier: 'UMATEST',
-      syntheticName,
-      syntheticSymbol,
-      liquidationLiveness: '1',
-      collateralRequirement: { rawValue: parseEther('1.0') },
-      disputeBondPct: { rawValue: parseEther('0.1') },
-      sponsorDisputeRewardPct: { rawValue: parseEther('0.1') },
-      disputerDisputeRewardPct: { rawValue: parseEther('0.1') },
-      strikePrice: { rawValue: parseEther(payload.strike) },
-      assetPrice: { rawValue: parseEther(payload.price) },
-      assetClass: ticker,
-      timerAddress
-    };
-    const tx = await factoryWithSigner.writeMintPotion(
-      params,
-      poolLpAddress,
-      { rawValue: parseEther(payload.quantity) },
-      { rawValue: parseEther(payload.premium) }
-    );
-    console.log(tx.hash);
-    await tx.wait(1);
-    await dispatch('loadPotions');
-  },
   async loadBalanceIn({ commit }, payload) {
-    const potionToken = new ethers.Contract(payload, synthAbi, provider);
-    const balance = await potionToken.balanceOf(state.address);
+    const itsToken = await new ethers.Contract(payload, ierc20Abi, provider);
+    const balance = await itsToken.balanceOf(state.address);
     const balances = state.balances;
     balances[payload] = parseFloat(ethers.utils.formatEther(balance));
     commit('set', { balances });
+  }, 
+
+  async rebalance({ commit }) {
+    const itsToken = await new ethers.Contract(state.itsAddr, itsAbi, provider);
+    const signer = provider.getSigner();
+    const itsTokenWithSigner = itsToken.connect(signer)
+    await itsTokenWithSigner.rebalanceLiquidity();
+  },
+  async resetStats({commit}) {
+    console.log("Happened");
+  },
+  async loadITSBalance({ commit }) {
+    const itsToken = await new ethers.Contract(state.itsAddr, ierc20Abi, provider);
+    const itsBalance = await itsToken.balanceOf(state.itsAddr);
+    commit('set', { itsBalance: ethers.utils.formatEther(itsBalance) });
+  },
+  async loadITSEthPrice({ commit }) {
+    const wethContract = await new ethers.Contract(state.wethAddr, ierc20Abi, provider);
+    const itsContract = await new ethers.Contract(state.itsAddr, ierc20Abi, provider);
+    const wethBal = await wethContract.balanceOf(state.itsPairAddr);
+    const itsBal = await itsContract.balanceOf(state.itsPairAddr);
+    const itsPrice = itsBal/wethBal;
+    commit('set', { itsPrice: itsPrice.toFixed(4)});
+  },
+  async getNextRebalance({commit}) {
+    const itsContract = await new ethers.Contract(state.itsAddr, itsAbi, provider);
+    const lastRebalance = await itsContract.lastRebalance();
+    const rebalanceInterval = await itsContract.rebalanceInterval();
+
+    const nextRebalance = (parseInt(lastRebalance) + parseInt(rebalanceInterval)) * 1000;
+    commit('set', {nextRebalance});
   }
 };
 
