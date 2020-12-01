@@ -1,25 +1,11 @@
 <template>
   <div class="block">
     <img src="~/@/assets/logo.svg" class="mb-2 logo" />
-    <h2 class="mb-4">ITERATION SYNDICATE</h2>
-    <p class="mb-6">Acquire $ITS</p>
+    <h2 class="mb-4">ITERATION REBALANCE</h2>
+    <p class="mb-6">Rebalance The Syndicate</p>
     <form @submit.prevent="handleSubmit" class="form">
       <div class="mb-4">
-        <div class="input d-block mb-4"> 
-          <div class="row">
-            <img src="~/@/assets/ETH.png" height="16px" class="eth-img" alt=""> 
-            <p class="no-marg-l">Etherium</p></div></div>
-        <input
-          type="number"
-          class="input mb-4"
-          placeholder="Quantity"
-          step="0.001"
-          v-model="form.quantity"
-        />
-        <div class="d-flex">
-         
-          
-        </div>
+        <h3>200ITS / 1ETH</h3>
       </div>
       <button
         v-if="settings.address"
@@ -27,7 +13,7 @@
         type="submit"
         class="button button-primary mb-2"
       >
-        Acquire
+        Rebalance
       </button>
       <a v-else class="button button-primary mb-2" @click="modalLoginOpen = true">Connect wallet</a>
     </form>

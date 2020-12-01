@@ -31,6 +31,9 @@
         <router-link :to="{ name: 'home' }" class="button button-secondary">
           ITS 
         </router-link>
+        <router-link :to="{ name: 'pre' }" class="button button-secondary">
+          Presale 
+        </router-link>
         <router-link :to="{ name: 'about' }" class="button button-secondary">
           ABOUT
         </router-link>
