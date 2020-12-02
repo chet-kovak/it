@@ -38,6 +38,8 @@
       :form="form"
       @close="modalMakepotionOpen = false"
     />
+    <div class="block2">
+    </div>
   </div>
 </template>
 

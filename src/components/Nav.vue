@@ -22,17 +22,15 @@
           </a>
         </div>
       </div>
-      <div class="pt-4 pb-10">
-        <h1 class="mx-auto container-md p-responsive ">ITERATION SYNDICATE</h1>
+      <div class="pt-4 pb-8">
+        <div class="glitch" data-text="ITERATION SYNDICATE">ITERATION SYNDICATE
+        </div> 
       </div>
     </div>
     <div class="mb-4 mt-n4">
       <div class="mainnav">
         <router-link :to="{ name: 'home' }" class="button button-secondary">
           $ITS 
-        </router-link>
-        <router-link :to="{ name: 'pre' }" class="button button-secondary">
-          PRESALE 
         </router-link>
         <router-link :to="{ name: 'about' }" class="button button-secondary">
           ABOUT
