@@ -7,7 +7,7 @@
       <div class="mb-4">
         
         <div class="">
-         <h3>LP Pair<br>
+         <h3>LP Reserve<br>
          44235.2 ITS / 0.9978 ETH<br>
          0.000023 ETH<br>
          LP Reward<br>
