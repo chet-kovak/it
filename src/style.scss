@@ -36,8 +36,8 @@ $border: 1px solid $bg-color;
 @import '~@primer/css/index.scss';
 .invert{filter:invert(1);}
 .full{position:absolute;left:0px;right:0px;top:0px;bottom:0px;}
-.social1{position:absolute;left:20vw;top:20vh;box-shadow:0px 0px 10px black;}
-.social2{position:absolute;right:20vw;top:20vh;box-shadow:0px 0px 10px black;}
+.social1{position:absolute;left:20vw;top:30vh;box-shadow:0px 0px 10px black;}
+.social2{position:absolute;right:20vw;top:30vh;box-shadow:0px 0px 10px black;}
 .social3{position:absolute;left:20vw;bottom:20vh;box-shadow:0px 0px 10px black;}
 .social4{position:absolute;right:20vw;bottom:20vh;box-shadow:0px 0px 10px black;}
 .stuff{display: flex;flex-flow: column;}
