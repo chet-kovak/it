@@ -35,7 +35,8 @@ $border: 1px solid $bg-color;
 
 @import '~@primer/css/index.scss';
 .invert{filter:invert(1);}
-.full{position:absolute;left:0px;right:0px;top:0px;bottom:0px;}
+.full{z-index:2;width:100vw;height:100px;bottom:0; top: unset;
+  display:flex;flex-flow:row nowrap;justify-content: space-around;}
 .social1{position:absolute;left:20vw;top:30vh;box-shadow:0px 0px 10px black;}
 .social2{position:absolute;right:20vw;top:30vh;box-shadow:0px 0px 10px black;}
 .social3{position:absolute;left:20vw;bottom:20vh;box-shadow:0px 0px 10px black;}
@@ -573,13 +574,10 @@ input.input:read-only {
     padding:16px;}
   }
   .glitch{font-size:2rem;width:max-content;}
-  .full{z-index:2;position:fixed;width:100vw;height:100px;bottom:0px;
-    display:flex;flex-flow:row;justify-content: space-around;}
+
 .social1{position:relative;left:unset;bottom:unset;top:unset;box-shadow:0px 0px 10px black;}
 .social2{position:relative;right:unset;bottom:unset;top:unset;box-shadow:0px 0px 10px black;}
 .social3{position:relative;left:unset;bottom:unset;top:unset;box-shadow:0px 0px 10px black;}
 .social4{position:relative;right:unset;bottom:unset;top:unset;box-shadow:0px 0px 10px black;}
 
 }
-
-@media screen and (min-height:1000px) {.full{position:relative;top:unset;height:64px;}}

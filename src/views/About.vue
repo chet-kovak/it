@@ -4,9 +4,10 @@
     <h2 class="mb-4">About Iteration Syndicate</h2>
     <h3>Rebalance</h3>
     <p class="mb-6">
+      100% of ITS Fees Rewarded to LP Holders<br />
        <br>2% of liquidity is removed<br>
 It is then split into ETH and ITS<br>
-100% of the ETH market buys ITS<br>
+ETH market buys ITS<br>
 96% of the ITS is then burned<br>
 4% of ITS sent to caller of the function<br>
 </p>
