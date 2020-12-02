@@ -553,7 +553,20 @@ input.input:read-only {
   clip:rect(0,900px,0,0); 
   animation:noise-anim-2 3s infinite linear alternate-reverse;
 }
-
+@media screen and (max-width:548px) {
+  .glitch{font-size:2rem!important;width:350px;}
+  .block{max-width:400px;width:400px;height:400px;}
+  .block2{max-width:400px;width:400px;height:400px;}
+  h3{font-size:1em!important;}
+  p{font-size:0.8rem;}
+}
+@media screen and (max-height:800px) {
+  .glitch{font-size:2em!important;width:350px;}
+  .block{max-width:400px;width:400px;height:400px;}
+  .block2{max-width:400px;width:400px;height:400px;}
+  h3{font-size:1em!important;}
+  p{font-size:0.8rem;}
+}
 @media screen and (max-width:100vh) {
   .circle-out{
     display:flex;
