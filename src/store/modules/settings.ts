@@ -23,13 +23,17 @@ if (ethereum) {
 const state = {
   loading: false,
   address: null,
-  itsAddr: '0x1a476b75c780e9d51a488380d48c744589b5b45a',
+  itsAddr: '0xC32cC5b70BEe4bd54Aa62B9Aefb91346d18821C4',
   itsPairAddr: '0x56c8b97d17f518c947da3e9c9ca4cb10d65558a0',
-  wethAddr: '0xB4FBF271143F4FBf7B91A5ded31805e42b2208d6',
-
+  wethAddr: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
+  liquidityLockDivisor: 100,
+  callerRewardDivisor: 25,
+  rebalanceDivisor: 50,
   name: '',
   balance: 0,
   itsBalance: 0,
+  ethPairBalance: 0,
+  itsPairBalance: 0,
   itsPrice: 0,
   nextRebalance: 0,
   network: {},
@@ -72,6 +76,7 @@ const actions = {
         const network = await provider.getNetwork();
         commit('set', { address });
         //initialize ether price
+        await dispatch('loadBalanceIn'); 
         await dispatch('loadITSBalance');
         await dispatch('loadITSEthPrice');
         //get contract balance
@@ -95,11 +100,11 @@ const actions = {
     const exchangeRates = await getExchangeRatesFromCoinGecko();
     commit('set', { exchangeRates });
   },
-  async loadBalanceIn({ commit }, payload) {
-    const itsToken = await new ethers.Contract(payload, ierc20Abi, provider);
+  async loadBalanceIn({ commit }) {
+    const itsToken = await new ethers.Contract(state.itsAddr, ierc20Abi, provider);
     const balance = await itsToken.balanceOf(state.address);
     const balances = state.balances;
-    balances[payload] = parseFloat(ethers.utils.formatEther(balance));
+    balances[state.itsAddr] = parseFloat(ethers.utils.formatEther(balance));
     commit('set', { balances });
   }, 
 
@@ -109,21 +114,34 @@ const actions = {
     const itsTokenWithSigner = itsToken.connect(signer)
     await itsTokenWithSigner.rebalanceLiquidity();
   },
-  async resetStats({commit}) {
-    console.log("Happened");
-  },
   async loadITSBalance({ commit }) {
     const itsToken = await new ethers.Contract(state.itsAddr, ierc20Abi, provider);
     const itsBalance = await itsToken.balanceOf(state.itsAddr);
     commit('set', { itsBalance: ethers.utils.formatEther(itsBalance) });
   },
+
   async loadITSEthPrice({ commit }) {
     const wethContract = await new ethers.Contract(state.wethAddr, ierc20Abi, provider);
     const itsContract = await new ethers.Contract(state.itsAddr, ierc20Abi, provider);
     const wethBal = await wethContract.balanceOf(state.itsPairAddr);
     const itsBal = await itsContract.balanceOf(state.itsPairAddr);
-    const itsPrice = itsBal/wethBal;
-    commit('set', { itsPrice: itsPrice.toFixed(4)});
+    const itsPrice = wethBal/itsBal;
+    commit('set', { 
+                      itsPrice: itsPrice.toFixed(6),
+                      ethPairBalance: ethers.utils.formatEther(wethBal),
+                      itsPairBalance: ethers.utils.formatEther(itsBal),
+                  });
+  },
+  async loadFees({ commit }) {
+    const itsContract = await new ethers.Contract(state.itsAddr, itsAbi, provider);
+    const liquidityLockDivisor = await itsContract.liquidityLockDivisor();
+    const callerRewardDivisor = await itsContract.callerRewardDivisor();
+    const rebalanceDivisor = await itsContract.rebalanceDivisor();
+    commit('set', { 
+                    liquidityLockDivisor: 100/liquidityLockDivisor, 
+                    callerRewardDivisor: 100/callerRewardDivisor, 
+                    rebalanceDivisor: 100/rebalanceDivisor
+                  })
   },
   async getNextRebalance({commit}) {
     const itsContract = await new ethers.Contract(state.itsAddr, itsAbi, provider);

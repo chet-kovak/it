@@ -8,7 +8,7 @@
       <div class="social1 circle-out"><a target="_blank" href="https://cryptochoad.medium.com/iteration-syndicate-d0bde4b0e384"><img src="./assets/medium.png" alt=""></a></div>
       <div class="social2 circle-out"><a target="_blank" href="https://twitter.com/RenascentDefi"><img src="./assets/twitter.png" alt=""></a></div>
       <div class="social3 circle-out"><a target="_blank" href="https://t.me/RenascentDefi"><img src="./assets/telegram.png" alt=""></a></div>
-      <div class="social4 circle-out"><a target="_blank" href=""><img src="./assets/etherscan.png" alt=""></a></div>
+      <div class="social4 circle-out"><a target="_blank" href="https://etherscan.io/token/0xC32cC5b70BEe4bd54Aa62B9Aefb91346d18821C4"><img src="./assets/etherscan.png" alt=""></a></div>
       </div>
       <vue-particles
         class="vue-particles"
