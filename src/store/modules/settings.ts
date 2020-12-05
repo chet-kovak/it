@@ -24,7 +24,7 @@ const state = {
   loading: false,
   address: null,
   itsAddr: '0xC32cC5b70BEe4bd54Aa62B9Aefb91346d18821C4',
-  itsPairAddr: '0x56c8b97d17f518c947da3e9c9ca4cb10d65558a0',
+  itsPairAddr: '0xc32cc5b70bee4bd54aa62b9aefb91346d18821c4',
   wethAddr: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
   liquidityLockDivisor: 100,
   callerRewardDivisor: 25,
