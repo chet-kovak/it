@@ -1,4 +1,4 @@
-# Potion
+# ITS
 
 ## Project setup
 ```
