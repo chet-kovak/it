@@ -63,9 +63,9 @@ $border: 1px solid $bg-color;
 body{
   box-shadow:inset 0px 0px 100px black;
   background-size:contain;
-  background-color:darkorchid;background-blend-mode:hard-light;
+  background-color:black;background-blend-mode:hard-light;
   background-size:cover;background-repeat:no-repeat;
-  background-image:url('./assets/poly.jpg');}
+  background-image:url('url(https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2F66.media.tumblr.com%2Fe0d3a411dc9f5fabea302c1a32f30bb8%2Ftumblr_nb0bdguL831tgzgaso1_400.gif&f=1&nofb=1)');}
 
 html, body, #app {
   text-align: center;
@@ -356,8 +356,7 @@ input.input:read-only {
   width: 500px;
   height: 500px;
   z-index: -1;
-  filter:contrast(5)brightness(5)blur(20px);
-  mix-blend-mode:color-dodge;
+  mix-blend-mode:color;
   position: absolute;top:0;left:0;
   p {
     max-width: 400px;

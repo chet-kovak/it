@@ -17,7 +17,7 @@
         :particlesNumber="50"
         shapeType="circle"
         :particleSize="0"
-        linesColor="#222"
+        linesColor="#fff"
         :linesWidth="0.5"
         :lineLinked="true"
         :lineOpacity="0.8"
