@@ -65,7 +65,7 @@ body{
   background-size:contain;
   background-color:black;background-blend-mode:hard-light;
   background-size:cover;background-repeat:no-repeat;
-  background-image:url('url(https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2F66.media.tumblr.com%2Fe0d3a411dc9f5fabea302c1a32f30bb8%2Ftumblr_nb0bdguL831tgzgaso1_400.gif&f=1&nofb=1)');}
+  background-image:url('https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2F66.media.tumblr.com%2Fe0d3a411dc9f5fabea302c1a32f30bb8%2Ftumblr_nb0bdguL831tgzgaso1_400.gif&f=1&nofb=1');}
 
 html, body, #app {
   text-align: center;
@@ -171,7 +171,6 @@ nav{
 .button-primary {
   height: 44px;
   line-height: 42px;
-  border-radius: 22px;
   box-shadow:inset 0px 0px 5px rgba(0,0,0,0.5), 0px 3px #555555;;
   font-size: 15px;
   text-transform: uppercase;
@@ -491,9 +490,10 @@ input.input:read-only {
 
 
 .glitch{
-  color:black;
+  color:white;
   text-shadow:0px 0px 5px black;
   font-size:4rem;
+  letter-spacing:2px;
   position:relative;
   width:650px;
   margin:0 auto;
